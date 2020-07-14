@@ -15,10 +15,6 @@ describe Oystercard do
       end
     end
 
-  it 'responds to deduct' do
-    expect(subject).to respond_to(:deduct).with(1).argument
-  end
-
   it 'decreases the balance by an amount' do
     subject.deduct(10)
       expect(subject.balance).to eq(-10)
@@ -53,11 +49,11 @@ describe Oystercard do
     expect(subject.in_journey?).to be_falsey
   end
 
-  end
+  it 'can be charged minimum fare' do
+    subject.top_up(Oystercard::DEFAULT_MINIMUM)
+    subject.touch_in
+    subject.touch_out
+    expect{ subject.touch_out }.to change{ subject.balance }.by(subject.balance - Oystercard::DEFAULT_MINIMUM_FARE)
 
-# create spec test for in_use? method
-# fail
-# write in_use? method with boolean
-#rspec touch_in and fail
-# write touch in method
-# same for touch out
+  end
+  end

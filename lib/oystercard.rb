@@ -2,6 +2,7 @@ class Oystercard
 
   DEFAULT_MAXIMUM = 90
   DEFAULT_MINIMUM = 1
+  DEFAULT_MINIMUM_FARE = 1
 
   attr_reader :balance, :in_use
 
@@ -27,6 +28,7 @@ class Oystercard
   end
 
   def touch_out
+    deduct(DEFAULT_MINIMUM_FARE)
     @in_use = false
   end
 
