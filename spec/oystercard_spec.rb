@@ -23,4 +23,35 @@ describe Oystercard do
     subject.deduct(10)
       expect(subject.balance).to eq(-10)
   end
-end
+
+  it 'responds to touch in' do
+    expect(subject).to respond_to(:touch_in)
+  end
+
+  it 'responds to touch out' do
+    expect(subject).to respond_to(:touch_out)
+  end
+
+  it 'shows if card is being in journey' do
+    expect(subject).to respond_to(:in_journey?)
+  end
+
+  it 'changes status after touch in' do
+    subject.touch_in
+    expect(subject.in_journey?).to be_truthy
+  end
+
+  it 'changes status after touch out' do
+    subject.touch_in
+    subject.touch_out
+    expect(subject.in_journey?).to be_falsey
+  end
+
+  end
+
+# create spec test for in_use? method
+# fail
+# write in_use? method with boolean
+#rspec touch_in and fail
+# write touch in method
+# same for touch out
