@@ -10,5 +10,12 @@ describe Oystercard do
       subject.top_up(10)
         expect(subject.balance).to eq(10)
     end
+    it 'limits balance' do
+      expect {subject.top_up(91) }.to raise_error 'TOO MUCH MONEY, MAX IS 90'
+      end
+    end
   end
-  end
+
+  # write test for balance 91 - expects an error when @balance > 90
+  # fail
+  # write a code with max balance
