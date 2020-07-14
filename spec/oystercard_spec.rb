@@ -15,17 +15,13 @@ describe Oystercard do
       end
     end
 
-  it 'decreases the balance by an amount' do
-    subject.deduct(10)
-      expect(subject.balance).to eq(-10)
-  end
-
   it 'responds to touch in' do
-    expect(subject).to respond_to(:touch_in)
+    subject.top_up(10)
+    expect(subject).to respond_to(:touch_in).with(1).argument
   end
 
   it 'raises an error if balance if below £1' do
-    expect { subject.touch_in }.to raise_error 'insufficient balance'
+    expect { subject.touch_in('balham') }.to raise_error 'insufficient balance'
   end
 
   it 'responds to touch out' do
@@ -38,22 +34,34 @@ describe Oystercard do
 
   it 'changes status after touch in' do
     subject.top_up(Oystercard::DEFAULT_MINIMUM)
-    subject.touch_in
+    subject.touch_in(:station)
     expect(subject.in_journey?).to be_truthy
   end
 
   it 'changes status after touch out' do
     subject.top_up(Oystercard::DEFAULT_MINIMUM)
-    subject.touch_in
+    subject.touch_in(:station)
     subject.touch_out
     expect(subject.in_journey?).to be_falsey
   end
 
   it 'can be charged minimum fare' do
     subject.top_up(Oystercard::DEFAULT_MINIMUM)
-    subject.touch_in
+    subject.touch_in(:station)
     subject.touch_out
     expect{ subject.touch_out }.to change{ subject.balance }.by(subject.balance - Oystercard::DEFAULT_MINIMUM_FARE)
-
   end
+
+  let(:station){ double :station }
+    it 'stores the entry station' do
+      subject.top_up(Oystercard::DEFAULT_MINIMUM)
+      subject.touch_in(station)
+      expect(subject.entry_station).to eq station
+    end
+    it 'forgets the entry station after touch out' do
+      subject.top_up(Oystercard::DEFAULT_MINIMUM)
+      subject.touch_in(:station)
+      subject.touch_out
+      expect(subject.entry_station).to be_nil
+    end
   end
