@@ -11,11 +11,16 @@ describe Oystercard do
         expect(subject.balance).to eq(10)
     end
     it 'limits balance' do
-      expect {subject.top_up(91) }.to raise_error 'TOO MUCH MONEY, MAX IS 90'
+      expect {subject.top_up(91) }.to raise_error "TOO MUCH MONEY, MAX IS #{Oystercard::DEFAULT_MAXIMUM}"
       end
     end
+
+  it 'responds to deduct' do
+    expect(subject).to respond_to(:deduct).with(1).argument
   end
 
-  # write test for balance 91 - expects an error when @balance > 90
-  # fail
-  # write a code with max balance
+  it 'decreases the balance by an amount' do
+    subject.deduct(10)
+      expect(subject.balance).to eq(-10)
+  end
+end
