@@ -28,6 +28,10 @@ describe Oystercard do
     expect(subject).to respond_to(:touch_in)
   end
 
+  it 'raises an error if balance if below £1' do
+    expect { subject.touch_in }.to raise_error 'insufficient balance'
+  end
+
   it 'responds to touch out' do
     expect(subject).to respond_to(:touch_out)
   end
@@ -37,11 +41,13 @@ describe Oystercard do
   end
 
   it 'changes status after touch in' do
+    subject.top_up(Oystercard::DEFAULT_MINIMUM)
     subject.touch_in
     expect(subject.in_journey?).to be_truthy
   end
 
   it 'changes status after touch out' do
+    subject.top_up(Oystercard::DEFAULT_MINIMUM)
     subject.touch_in
     subject.touch_out
     expect(subject.in_journey?).to be_falsey
