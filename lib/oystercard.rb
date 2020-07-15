@@ -4,7 +4,7 @@ class Oystercard
   DEFAULT_MINIMUM = 1
   DEFAULT_MINIMUM_FARE = 1
 
-  attr_reader :balance, :entry_station, :exit_station, :journey_history
+  attr_reader :balance, :entry_station, :exit_station, :journey_history, :journey
 
   def initialize
     @balance = 0
@@ -26,7 +26,7 @@ class Oystercard
   end
 
   def touch_out(station)
-    deduct(DEFAULT_MINIMUM_FARE)
+    charge_fare
     @entry_station = nil
     @exit_station = station
     @journey[:exit_station] = station
@@ -38,6 +38,10 @@ class Oystercard
   end
 
   private
+
+  def charge_fare
+    deduct(DEFAULT_MINIMUM_FARE)
+  end
 
   def deduct(amount)
     @balance -= amount

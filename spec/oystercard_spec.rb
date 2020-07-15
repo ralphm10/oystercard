@@ -2,7 +2,8 @@ require 'oystercard'
 
 describe Oystercard do
 
-  let(:station){ double :station }
+  let(:entry_station){ double :station }
+  let(:exit_station){ double :station }
 
   it 'has a balance of zero' do
     expect(subject.balance).to eq(0)
@@ -12,10 +13,11 @@ describe Oystercard do
   end
 
   it 'can store a journey' do
+    journey_count = subject.journey_history.length
     subject.top_up(Oystercard::DEFAULT_MINIMUM)
     subject.touch_in(:station)
     subject.touch_out(:station)
-    expect(subject.journey_history.length).to eq(1)
+    expect(subject.journey_history.length).to eq(journey_count + 1)
   end
 
   describe '#top_up' do
@@ -69,8 +71,8 @@ describe Oystercard do
 
     it 'stores the entry station' do
       subject.top_up(Oystercard::DEFAULT_MINIMUM)
-      subject.touch_in(station)
-      expect(subject.entry_station).to eq station
+      subject.touch_in(entry_station)
+      expect(subject.entry_station).to eq entry_station
     end
     it 'forgets the entry station after touch out' do
       subject.top_up(Oystercard::DEFAULT_MINIMUM)
@@ -81,8 +83,8 @@ describe Oystercard do
 
     it 'stores the exit station' do
       subject.top_up(Oystercard::DEFAULT_MINIMUM)
-      subject.touch_in(station)
-      subject.touch_out(station)
-      expect(subject.exit_station).to eq station
+      subject.touch_in(:station)
+      subject.touch_out(exit_station)
+      expect(subject.exit_station).to eq exit_station
     end
   end
