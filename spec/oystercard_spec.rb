@@ -1,15 +1,30 @@
 require 'oystercard'
 
 describe Oystercard do
+
+  let(:station){ double :station }
+
   it 'has a balance of zero' do
     expect(subject.balance).to eq(0)
   end
+  it 'has a list of journeys' do
+    expect(subject.journey_history).to eq([])
+  end
+
+  it 'can store a journey' do
+    subject.top_up(Oystercard::DEFAULT_MINIMUM)
+    subject.touch_in(:station)
+    subject.touch_out(:station)
+    expect(subject.journey_history.length).to eq(1)
+  end
+
   describe '#top_up' do
     it {is_expected.to respond_to(:top_up).with(1).argument }
     it 'increases the balance with the amount of topup' do
       subject.top_up(10)
         expect(subject.balance).to eq(10)
     end
+
     it 'limits balance' do
       expect {subject.top_up(91) }.to raise_error "TOO MUCH MONEY, MAX IS #{Oystercard::DEFAULT_MAXIMUM}"
       end
@@ -21,7 +36,7 @@ describe Oystercard do
   end
 
   it 'raises an error if balance if below £1' do
-    expect { subject.touch_in('balham') }.to raise_error 'insufficient balance'
+    expect { subject.touch_in(:station) }.to raise_error 'insufficient balance'
   end
 
   it 'responds to touch out' do
@@ -41,18 +56,17 @@ describe Oystercard do
   it 'changes status after touch out' do
     subject.top_up(Oystercard::DEFAULT_MINIMUM)
     subject.touch_in(:station)
-    subject.touch_out
+    subject.touch_out(:station)
     expect(subject.in_journey?).to be_falsey
   end
 
   it 'can be charged minimum fare' do
     subject.top_up(Oystercard::DEFAULT_MINIMUM)
     subject.touch_in(:station)
-    subject.touch_out
-    expect{ subject.touch_out }.to change{ subject.balance }.by(subject.balance - Oystercard::DEFAULT_MINIMUM_FARE)
+    subject.touch_out(:station)
+    expect{ subject.touch_out(:station) }.to change{ subject.balance }.by(- Oystercard::DEFAULT_MINIMUM_FARE)
   end
 
-  let(:station){ double :station }
     it 'stores the entry station' do
       subject.top_up(Oystercard::DEFAULT_MINIMUM)
       subject.touch_in(station)
@@ -61,7 +75,14 @@ describe Oystercard do
     it 'forgets the entry station after touch out' do
       subject.top_up(Oystercard::DEFAULT_MINIMUM)
       subject.touch_in(:station)
-      subject.touch_out
+      subject.touch_out(:station)
       expect(subject.entry_station).to be_nil
+    end
+
+    it 'stores the exit station' do
+      subject.top_up(Oystercard::DEFAULT_MINIMUM)
+      subject.touch_in(station)
+      subject.touch_out(station)
+      expect(subject.exit_station).to eq station
     end
   end
