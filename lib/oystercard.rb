@@ -16,22 +16,20 @@ class Oystercard
 
   def top_up(amount)
     @balance += amount
-    fail "TOO MUCH MONEY, MAX IS #{DEFAULT_MAXIMUM}" if @balance > DEFAULT_MAXIMUM
+    fail "Top-up limit is: #{DEFAULT_MAXIMUM}" if @balance > DEFAULT_MAXIMUM
     @balance
   end
 
   def touch_in(station)
-    fail "insufficient balance" if @balance < DEFAULT_MINIMUM
-    @journey.start(station) # NEED TO ADD THIS
+    fail "Insufficient balance" if @balance < DEFAULT_MINIMUM
+    @journey.start(station)
     @journey_log = {entry_station: station}
   end
 
   def touch_out(station)
-
-
     @journey.end(station)
     @journey_log[:exit_station] = station
-     @journey_history << @journey
+    @journey_history << @journey
     charge_fare
   end
 

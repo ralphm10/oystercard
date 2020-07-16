@@ -23,22 +23,22 @@ describe Oystercard do
   describe '#top_up' do
     it {is_expected.to respond_to(:top_up).with(1).argument }
     it 'increases the balance with the amount of topup' do
-      subject.top_up(10)
-        expect(subject.balance).to eq(10)
+      subject.top_up(Oystercard::DEFAULT_MINIMUM)
+        expect(subject.balance).to eq(Oystercard::DEFAULT_MINIMUM)
     end
 
     it 'limits balance' do
-      expect {subject.top_up(91) }.to raise_error "TOO MUCH MONEY, MAX IS #{Oystercard::DEFAULT_MAXIMUM}"
+      expect {subject.top_up(Oystercard::DEFAULT_MAXIMUM + 1) }.to raise_error "Top-up limit is: #{Oystercard::DEFAULT_MAXIMUM}"
       end
     end
 
   it 'responds to touch in' do
-    subject.top_up(10)
+    subject.top_up(Oystercard::DEFAULT_MINIMUM)
     expect(subject).to respond_to(:touch_in).with(1).argument
   end
 
   it 'raises an error if balance if below £1' do
-    expect { subject.touch_in(:station) }.to raise_error 'insufficient balance'
+    expect { subject.touch_in(:station) }.to raise_error 'Insufficient balance'
   end
 
   it 'responds to touch out' do
