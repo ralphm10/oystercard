@@ -1,5 +1,8 @@
 class Journey
 
+  DEFAULT_MINIMUM_FARE = 1
+  PENALTY_FARE = 6
+
   def initialize(entry_station = nil)
     @entry_station = entry_station
   end
@@ -17,7 +20,7 @@ class Journey
   end
 
   def fare
-    complete? ? 1 : 6
+    complete? ? DEFAULT_MINIMUM_FARE : PENALTY_FARE
   end
 
 end

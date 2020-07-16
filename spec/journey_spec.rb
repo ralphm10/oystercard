@@ -35,11 +35,11 @@ describe Journey do
     journey = Journey.new(entry_station)
     journey.start
     journey.end(exit_station)
-    expect(journey.fare).to eq(1)
+    expect(journey.fare).to eq(Journey::DEFAULT_MINIMUM_FARE)
   end
   it 'can calculate the fare for an incomplete journey' do
     journey = Journey.new
     journey.end(exit_station)
-    expect(journey.fare).to eq(6)
+    expect(journey.fare).to eq(Journey::PENALTY_FARE)
   end
 end

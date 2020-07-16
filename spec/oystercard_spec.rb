@@ -45,35 +45,14 @@ describe Oystercard do
     expect(subject).to respond_to(:touch_out)
   end
 
-  it 'shows if card is being in journey' do
-    expect(subject).to respond_to(:in_journey?)
-  end
-
-  it 'changes status after touch in' do
-    subject.top_up(Oystercard::DEFAULT_MINIMUM)
-    subject.touch_in(:station)
-    expect(subject.in_journey?).to be_truthy
-  end
-
-  it 'changes status after touch out' do
+  it 'can change the balance by the minimum fare' do
     subject.top_up(Oystercard::DEFAULT_MINIMUM)
     subject.touch_in(:station)
     subject.touch_out(:station)
-    expect(subject.in_journey?).to be_falsey
+    expect{ subject.touch_out(:station) }.to change{ subject.balance }.by(- Journey::PENALTY_FARE)
   end
 
-  it 'can be charged minimum fare' do
-    subject.top_up(Oystercard::DEFAULT_MINIMUM)
-    subject.touch_in(:station)
-    subject.touch_out(:station)
-    expect{ subject.touch_out(:station) }.to change{ subject.balance }.by(- Oystercard::DEFAULT_MINIMUM_FARE)
-  end
 
-    it 'stores the entry station' do
-      subject.top_up(Oystercard::DEFAULT_MINIMUM)
-      subject.touch_in(entry_station)
-      expect(subject.entry_station).to eq entry_station
-    end
     it 'forgets the entry station after touch out' do
       subject.top_up(Oystercard::DEFAULT_MINIMUM)
       subject.touch_in(:station)
@@ -81,10 +60,4 @@ describe Oystercard do
       expect(subject.entry_station).to be_nil
     end
 
-    it 'stores the exit station' do
-      subject.top_up(Oystercard::DEFAULT_MINIMUM)
-      subject.touch_in(:station)
-      subject.touch_out(exit_station)
-      expect(subject.exit_station).to eq exit_station
-    end
   end
