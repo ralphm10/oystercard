@@ -7,8 +7,8 @@ class Journey
     @entry_station = entry_station
   end
 
-  def start
-    @entry_station
+  def start(station)
+    @entry_station = station
   end
 
   def end(exit_station)

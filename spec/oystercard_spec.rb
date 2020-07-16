@@ -49,7 +49,7 @@ describe Oystercard do
     subject.top_up(Oystercard::DEFAULT_MINIMUM)
     subject.touch_in(:station)
     subject.touch_out(:station)
-    expect{ subject.touch_out(:station) }.to change{ subject.balance }.by(- Journey::PENALTY_FARE)
+    expect{ subject.touch_out(:station) }.to change{ subject.balance }.by(- Journey::DEFAULT_MINIMUM_FARE)
   end
 
 

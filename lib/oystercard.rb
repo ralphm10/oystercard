@@ -1,3 +1,5 @@
+require_relative 'journey'
+
 class Oystercard
 
   DEFAULT_MAXIMUM = 90
@@ -20,14 +22,17 @@ class Oystercard
 
   def touch_in(station)
     fail "insufficient balance" if @balance < DEFAULT_MINIMUM
-    # move to journey class? @journey = {entry_station: station}
+    @journey.start(station) # NEED TO ADD THIS
+    @journey_log = {entry_station: station}
   end
 
   def touch_out(station)
-    charge_fare
 
-    # @journey[:exit_station] = station
-    # @journey_history << @journey
+
+    @journey.end(station)
+    @journey_log[:exit_station] = station
+     @journey_history << @journey
+    charge_fare
   end
 
   private
